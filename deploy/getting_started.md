@@ -136,106 +136,32 @@ To add environment variables:
 
 ![Screenshot of the Deploy env variables config screen](./images/env_var.png)
 
+You can re-open the drawer at any time to edit or remove environment variables.
+You can also edit the app name on this page, and select which region(s) the
+application should be served from.
+
 ## Build and deploy your app
 
-1. Click `Create App` to create the application and start the first build
+1. Click `Create App` to create the application and start the first build.
 2. Watch the build progress through the live logs:
 
 ![Screenshot of app build logs](./images/build_logs.png)
 
 The build logs show these stages:
 
-- **Prepare**: Cloning the repository and restoring caches
-- **Install**: Running the install command and framework-specific setup
-- **Build**: Executing the build command and preparing the deployment artifact
-- **Warm up**: Testing the deployment with a request
-- **Route**: Deploying the build to global regions
+- **Prepare**: Cloning the GitHub repository and restoring build cache
+- **Install**: Running the install command and any framework-specific pre-install setup
+- **Build**: Executing the build command, any framework-specific pre- and post-build setup, and preparing the deployment artifact
+- **Warm up**: Sending a request to the preview URL to ensure the app starts correctly. The logs shown here are runtime logs, not build logs.
+- **Route**: Rolling out the new build to all global regions
 
-You can cancel a build with the button in the top-left corner, or restart failed
-builds from the same location.
+In the top-left corner, a button lets you cancel an in-progress build. For failed builds, the same location shows a button to restart the build.
 
-After completion, the top-right shows the preview URL, and below that, all
-timelines where the build is deployed.
+For completed builds, the top-right shows the preview URL. Further down, all timelines where the build is deployed are listed — such as `Production` or `Git Branch` timelines. The page also indicates how the build was triggered: `manual action` for UI-triggered builds, or `GitHub repo` for builds triggered via the GitHub integration.
 
 ## Monitor your application
 
-After deploying, use the observability tools to monitor your application:
-
-### Logs
-
-View application logs with filtering options for context, revision, and text
-content:
-
-![Screenshot of the Logs page](./images/logs.png)
-
-Use the search bar to filter logs (e.g., `context:production`, `revision:<id>`).
-The time picker adjusts the displayed time range.
-
-If a log is associated with a trace, you can click "View trace" to see the
-corresponding trace information.
-
-### Traces
-
-View request traces with detailed timing information:
-
-![Screenshot of the Traces page](./images/traces.png)
-
-Click any trace to open the trace view showing all spans in a waterfall
-visualization:
-
-![Screenshot of the Trace view](./images/trace.png)
-
-The trace view shows:
-
-- Timeline of spans with duration
-- Span details including attributes
-- Logs emitted during the span To save the environment variables, press the save
-  button. You can re-open the drawer to edit / remove environment variables you
-  have added.
-
-You can also edit the app name on this page, and select which region(s) the
-application should be served from.
-
-## Build and deploy your app
-
-Finally, you can press the `Create App` button to create the app. This will
-create the app and immediately trigger the first build:
-
-![Screenshot of app build logs](./images/build_logs.png)
-
-On the build page you can see live streaming build logs split into multiple
-sections:
-
-- **Prepare:** cloning the GitHub repository and restoring build cache
-- **Install:** executing the install command, and any framework specific
-  pre-install setup
-- **Build:** executing the build command, any framework specific pre- and
-  post-build setup, and preparing the build artifact for deployment
-- **Warm up:** sending a request to the preview URL of the deployment to ensure
-  it starts up correctly. The logs shown in the Warm up section are Runtime
-  logs, not build logs.
-- **Route:** Deno Deploy is rolling out the new version of this build into all
-  global regions.
-
-In the top left of this build is a button to cancel the build. For failed
-builds, there is also a button to restart the build.
-
-For completed builds, the top right shows the preview URL of the build. Further
-down all timelines that this build is deployed to are shown, such as
-`Production`, or `Git Branch` timelines.
-
-You can also see how the build was triggered on this page. This can either be
-`manual action`, for builds triggered through the UI, or `GitHub repo` for
-builds triggered through the GitHub integration.
-
-You can view the application through either the preview URL, or any of the other
-URLs shown in the timelines list.
-
-## Monitor your application
-
-After visiting your application, you can view telemetry about your application
-in the form of the logs and traces available in our observability panels. You
-can visit these pages by clicking the respective buttons in the left sidebar.
+After deploying, use the observability tools to monitor your application.
 
 ### Logs
 
@@ -243,46 +169,33 @@ can visit these pages by clicking the respective buttons in the left sidebar.
 
 The logs page shows all recent logs in the project. By default logs from all
 contexts (production and development) are shown, but using the filter button and
-search bar at the top, the shown logs can be restricted. For example, to filter
-to only production logs, add `context:production` to the search bar. To only
-show logs from a certain revision, use `revision:<id>` etc.
-
-You can also use full text search in the search bar. The full text search fill
-filter down the log entries to only those containing the text written,
+search bar at the top, the shown logs can be restricted. For example, add
+`context:production` to show only production logs, or `revision:<id>` to filter
+by a specific revision. Full-text search is also supported and matches
 case-insensitively.
 
-By default logs from the last hour are shown. The time picker in the top right
-can be used to adjust the time frame that logs are shown for. The time zone of
-the timestamps shown is the time zone set in the time picker.
+By default logs from the last hour are shown. Use the time picker in the top
+right to adjust the time range. Timestamps are shown in the time zone set in the
+time picker.
 
-The "view trace" button on the right of a log line shows up if a log line is
-correlated with a trace. This happens when a log line occurs within an active
-trace. Clicking this button will open the respective trace as an overlay.
+If a log line is associated with a trace, a "View trace" button appears on the
+right. Clicking it opens the corresponding trace as an overlay.
 
 ### Traces
 
 ![Screenshot of the Traces page](./images/traces.png)
 
-The traces page shows all recent traces in the project. By default traces from
-all contexts (production and development) are shown, but using the filter button
-and search bar at the top, the shown traces can be restricted. For example, to
-filter to only production traces, add `context:production` to the search bar. To
-only show traces from a certain revision, use `revision:<id>` etc.
+The traces page shows all recent traces in the project. Filtering works the same
+way as on the Logs page — use `context:production`, `revision:<id>`, etc. All
+traces that contain an incoming HTTP request are listed, showing the request path
+and trace duration in milliseconds.
 
-All traces that contain an incoming HTTP request are shown in the list. The text
-shown for each trace is the path of the request, and the duration of the trace
-in milliseconds.
-
-Clicking on a trace will open the trace view, which shows the full trace
-including all spans and logs that are part of the trace.
+Clicking on a trace opens the trace view, which shows all spans and logs that
+are part of the trace:
 
 ![Screenshot of the Trace view](./images/trace.png)
 
-For each span in the trace you can see the duration of the span, the name of the
-span, the start and end time, and the recorded attributes. By clicking on a span
-in the timeline, the details of that span will be shown in the summary panel at
-the bottom.
-
-The logs that are emitted as part of a given span are shown in the logs tab at
-the bottom. Changing the selected span will update which logs are shown in this
-panel.
+For each span you can see its duration, name, start and end time, and recorded
+attributes. Clicking a span in the timeline updates the summary panel at the
+bottom. The logs tab shows logs emitted within the selected span and updates as
+you switch between spans.
